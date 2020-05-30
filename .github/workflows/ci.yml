@@ -1,0 +1,46 @@
+name: Continuous Integration
+on: [push]
+jobs:
+    ci:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.4'
+                  coverage: xdebug
+
+            - name: Get Composer Cache Directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - name: Cache dependencies
+              uses: actions/cache@v1
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+                  restore-keys: ${{ runner.os }}-composer-
+
+            - name: Composer install
+              run: composer install --prefer-dist --no-progress --no-suggest
+
+            - name: CodeSniffer
+              run: php vendor/bin/phpcs
+
+            - name: PHPStan
+              run: php vendor/bin/phpstan analyse
+
+            - name: Psalm
+              run: php vendor/bin/psalm
+
+            - name: PHPUnit
+              run: vendor/bin/phpunit
+
+            - name: Coveralls upload
+              run: |
+                  composer require --prefer-dist --no-progress --no-suggest --ansi cedx/coveralls
+                  vendor/bin/coveralls /tmp/coverage.xml
+              env:
+                  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
