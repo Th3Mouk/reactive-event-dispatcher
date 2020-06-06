@@ -81,10 +81,6 @@ final class ListenerProvider implements ListenerProviderInterface
      */
     public function getListenersForEvent(object $event): iterable
     {
-        if (!$event instanceof Event) {
-            throw new \InvalidArgumentException();
-        }
-
         foreach ($this->orderedListenerFqcnIterableForEvent($event) as $listener_fqcn) {
             if (!$this->service_locator->has($listener_fqcn)) {
                 continue;
@@ -103,7 +99,7 @@ final class ListenerProvider implements ListenerProviderInterface
     /**
      * @psalm-return array<class-string>
      */
-    private function orderedListenerFqcnIterableForEvent(Event $event): array
+    private function orderedListenerFqcnIterableForEvent(object $event): array
     {
         return $this->sorted_correlations[get_class($event)] ?? [];
     }

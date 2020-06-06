@@ -11,5 +11,5 @@ use Rx\Observable;
  */
 interface Listener
 {
-    public function process(Event $event): Observable;
+    public function process(object $event): Observable;
 }

@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Rx\Observable;
-use Th3Mouk\ReactiveEventDispatcher\Event;
 use Th3Mouk\ReactiveEventDispatcher\EventCorrelation;
 use Th3Mouk\ReactiveEventDispatcher\Listener;
 use Th3Mouk\ReactiveEventDispatcher\ListenerProvider;
@@ -38,24 +37,12 @@ class ListenerProviderTest extends TestCase
     {
         $listener_provider = new ListenerProvider($this->empty_locator, []);
 
-        $event = new class implements Event {
+        $event = new class {
         };
 
         $listeners = $listener_provider->getListenersForEvent($event);
 
         $this->assertCount(0, $listeners);
-    }
-
-    public function testGetListenersForEventThrowingWithIncorrectEvent(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $listener_provider = new ListenerProvider($this->empty_locator, []);
-
-        $event = new class {
-        };
-
-        $this->assertCount(0, $listener_provider->getListenersForEvent($event));
     }
 
     public function testGetListenersForEventSortCorrectly(): void
@@ -77,7 +64,7 @@ class ListenerProviderTest extends TestCase
                         $this->id = $id;
                     }
 
-                    public function process(Event $event): Observable
+                    public function process(object $event): Observable
                     {
                         return Observable::of(1);
                     }
@@ -91,7 +78,7 @@ class ListenerProviderTest extends TestCase
             }
         };
 
-        $event = new class implements Event {
+        $event = new class {
         };
 
         $listener_provider = new ListenerProvider(

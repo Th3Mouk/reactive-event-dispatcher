@@ -24,10 +24,6 @@ final class Dispatcher implements EventDispatcherInterface
      */
     public function dispatch(object $event)
     {
-        if (!$event instanceof Event) {
-            throw new \InvalidArgumentException();
-        }
-
         $listeners = $this->listener_provider->getListenersForEvent($event);
 
         $observable = Observable::of($event);
