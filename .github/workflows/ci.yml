@@ -37,10 +37,3 @@ jobs:
 
             - name: PHPUnit
               run: vendor/bin/phpunit
-
-            - name: Coveralls upload
-              run: |
-                  composer require --prefer-dist --no-progress --no-suggest --ansi cedx/coveralls
-                  vendor/bin/coveralls /tmp/coverage.xml
-              env:
-                  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
