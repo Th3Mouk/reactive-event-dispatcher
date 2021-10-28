@@ -10,34 +10,34 @@ namespace Th3Mouk\ReactiveEventDispatcher;
 final class EventCorrelation
 {
     /** @psalm-var class-string */
-    public string $event_fqcn;
+    public string $eventFqcn;
     /** @psalm-var class-string */
-    public string $listener_fqcn;
+    public string $listenerFqcn;
     public Priority $priority;
 
     /**
-     * @psalm-param class-string $event_fqcn
-     * @psalm-param class-string $listener_fqcn
+     * @psalm-param class-string $eventFqcn
+     * @psalm-param class-string $listenerFqcn
      */
     private function __construct(
-        string $event_fqcn,
-        string $listener_fqcn,
+        string $eventFqcn,
+        string $listenerFqcn,
         Priority $priority
     ) {
-        $this->event_fqcn    = $event_fqcn;
-        $this->listener_fqcn = $listener_fqcn;
-        $this->priority      = $priority;
+        $this->eventFqcn    = $eventFqcn;
+        $this->listenerFqcn = $listenerFqcn;
+        $this->priority     = $priority;
     }
 
     /**
-     * @psalm-param class-string $event_fqcn
-     * @psalm-param class-string $listener_fqcn
+     * @psalm-param class-string $eventFqcn
+     * @psalm-param class-string $listenerFqcn
      */
     public static function create(
-        string $event_fqcn,
-        string $listener_fqcn,
+        string $eventFqcn,
+        string $listenerFqcn,
         Priority $priority
     ): self {
-        return new self($event_fqcn, $listener_fqcn, $priority);
+        return new self($eventFqcn, $listenerFqcn, $priority);
     }
 }

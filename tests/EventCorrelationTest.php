@@ -12,12 +12,12 @@ class EventCorrelationTest extends TestCase
 {
     public function testCreate(): void
     {
-        $event_correlation = EventCorrelation::create(
+        $eventCorrelation = EventCorrelation::create(
             'event-fqcn',
             'listener-fqcn',
             Priority::fromInt(0)
         );
 
-        $this->assertInstanceOf(EventCorrelation::class, $event_correlation);
+        $this->assertInstanceOf(EventCorrelation::class, $eventCorrelation);
     }
 }

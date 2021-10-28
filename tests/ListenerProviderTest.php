@@ -17,7 +17,7 @@ class ListenerProviderTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->empty_locator = new class implements ContainerInterface {
+        $this->emptyLocator = new class implements ContainerInterface {
             /** @inheritDoc */
             public function get($id): void
             {
@@ -35,12 +35,12 @@ class ListenerProviderTest extends TestCase
 
     public function testGetListenersForEventMustReturnEmptyIterable(): void
     {
-        $listener_provider = new ListenerProvider($this->empty_locator, []);
+        $listenerProvider = new ListenerProvider($this->emptyLocator, []);
 
         $event = new class {
         };
 
-        $listeners = $listener_provider->getListenersForEvent($event);
+        $listeners = $listenerProvider->getListenersForEvent($event);
 
         $this->assertCount(0, $listeners);
     }
@@ -81,7 +81,7 @@ class ListenerProviderTest extends TestCase
         $event = new class {
         };
 
-        $listener_provider = new ListenerProvider(
+        $listenerProvider = new ListenerProvider(
             $locator,
             [
                 EventCorrelation::create(get_class($event), 'listener_1', Priority::fromInt(0)),
@@ -94,7 +94,7 @@ class ListenerProviderTest extends TestCase
             ]
         );
 
-        $listeners = $listener_provider->getListenersForEvent($event);
+        $listeners = $listenerProvider->getListenersForEvent($event);
 
         $first = $listeners->current();
 

@@ -10,11 +10,11 @@ use Rx\Observable;
 
 final class Dispatcher implements EventDispatcherInterface
 {
-    private ListenerProviderInterface $listener_provider;
+    private ListenerProviderInterface $listenerProvider;
 
-    public function __construct(ListenerProviderInterface $listener_provider)
+    public function __construct(ListenerProviderInterface $listenerProvider)
     {
-        $this->listener_provider = $listener_provider;
+        $this->listenerProvider = $listenerProvider;
     }
 
     /**
@@ -24,7 +24,7 @@ final class Dispatcher implements EventDispatcherInterface
      */
     public function dispatch(object $event)
     {
-        $listeners = $this->listener_provider->getListenersForEvent($event);
+        $listeners = $this->listenerProvider->getListenersForEvent($event);
 
         $observable = Observable::of($event);
 
