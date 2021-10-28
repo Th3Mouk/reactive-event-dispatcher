@@ -10,7 +10,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: '7.4'
-                  coverage: xdebug
+                  coverage: pcov
 
             - name: Get Composer Cache Directory
               id: composer-cache
@@ -37,3 +37,10 @@ jobs:
 
             - name: PHPUnit
               run: vendor/bin/phpunit
+
+            - name: Upload coverage results to Coveralls
+              env:
+                  COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  composer global require php-coveralls/php-coveralls
+                  php-coveralls -v
