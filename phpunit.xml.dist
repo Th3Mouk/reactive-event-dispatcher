@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit bootstrap="phpunit-bootstrap.php">
-    <testsuites>
-        <testsuite name="Event Dispatcher Test Suite">
-            <directory suffix="Test.php">./tests/</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src/</directory>
-        </whitelist>
-    </filter>
-
-    <logging>
-<!--        <log type="coverage-html" target="./tmp/report" lowUpperBound="50"-->
-<!--             highLowerBound="75"/>-->
-        <log type="coverage-php" target="build/cov/coverage.cov"/>
-<!--        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
-    </logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="phpunit-bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <testsuites>
+    <testsuite name="Event Dispatcher Test Suite">
+      <directory suffix="Test.php">./tests/</directory>
+    </testsuite>
+  </testsuites>
+  <coverage>
+    <include>
+      <directory suffix=".php">./src/</directory>
+    </include>
+    <report>
+      <php outputFile="build/cov/coverage.cov"/>
+    </report>
+  </coverage>
 </phpunit>
