@@ -52,11 +52,11 @@ class ListenerProviderTest extends TestCase
             public function get($id)
             {
                 if ($id === 'listener_7') {
-                    return new class() {
+                    return new class () {
                     };
                 }
 
-                return new class($id) implements Listener {
+                return new class ($id) implements Listener {
                     public string $id;
 
                     public function __construct(string $id)

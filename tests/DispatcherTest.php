@@ -26,7 +26,7 @@ class DispatcherTest extends TestCase
             }
         };
 
-        $this->listener_provider = new class($this->listener) implements ListenerProviderInterface {
+        $this->listener_provider = new class ($this->listener) implements ListenerProviderInterface {
             private Listener $listener;
 
             public function __construct(Listener $listener)
