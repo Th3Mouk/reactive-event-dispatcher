@@ -12,66 +12,66 @@ use Psr\EventDispatcher\ListenerProviderInterface;
  */
 final class ListenerProvider implements ListenerProviderInterface
 {
-    private ContainerInterface $service_locator;
+    private ContainerInterface $serviceLocator;
     /** @psalm-var array<class-string, list<class-string>> */
-    private array $sorted_correlations;
+    private array $sortedCorrelations;
 
     /**
-     * @param array<EventCorrelation> $event_correlations
+     * @param array<EventCorrelation> $eventCorrelations
      */
-    public function __construct(ContainerInterface $service_locator, array $event_correlations)
+    public function __construct(ContainerInterface $serviceLocator, array $eventCorrelations)
     {
-        $this->service_locator     = $service_locator;
-        $this->sorted_correlations = $this->sortedEventCorrelation($event_correlations);
+        $this->serviceLocator     = $serviceLocator;
+        $this->sortedCorrelations = $this->sortedEventCorrelation($eventCorrelations);
     }
 
     /**
-     * @param array<EventCorrelation> $event_correlations
+     * @param array<EventCorrelation> $eventCorrelations
      *
      * @psalm-return array<class-string, list<class-string>>
      */
-    private function sortedEventCorrelation(array $event_correlations): array
+    private function sortedEventCorrelation(array $eventCorrelations): array
     {
-        $sorted_without_priorities = array_reduce(
-            $event_correlations,
+        $sortedWithoutPriorities = array_reduce(
+            $eventCorrelations,
             /**
              * @psalm-param array<class-string, array<int, list<class-string>>> $carry
              * @psalm-return array<class-string, array<int, list<class-string>>>
              */
-            static function (array $carry, EventCorrelation $event_correlation): array {
-                $carry[$event_correlation->event_fqcn][$event_correlation->priority->value][] = $event_correlation->listener_fqcn;
+            static function (array $carry, EventCorrelation $eventCorrelation): array {
+                $carry[$eventCorrelation->eventFqcn][$eventCorrelation->priority->value][] = $eventCorrelation->listenerFqcn;
 
                 return $carry;
             },
             []
         );
 
-        /** @psalm-var array<class-string, list<class-string>> $fully_sorted */
-        $fully_sorted = array_map(
+        /** @psalm-var array<class-string, list<class-string>> $fullySorted */
+        $fullySorted = array_map(
             /**
-             * @psalm-param array<int, list<class-string>> $event_listeners_with_priorities
+             * @psalm-param array<int, list<class-string>> $eventListenersWithPriorities
              * @psalm-return list<class-string>
              */
-            static function (array $event_listeners_with_priorities) {
-                krsort($event_listeners_with_priorities);
+            static function (array $eventListenersWithPriorities) {
+                krsort($eventListenersWithPriorities);
 
                 return array_reduce(
-                    $event_listeners_with_priorities,
+                    $eventListenersWithPriorities,
                     /**
                      * @psalm-param list<class-string> $carry
-                     * @psalm-param list<class-string> $listeners_sorted_by_priorities
+                     * @psalm-param list<class-string> $listenersSortedByPriorities
                      * @psalm-return list<class-string>
                      */
-                    static function (array $carry, array $listeners_sorted_by_priorities): array {
-                        return array_merge($carry, $listeners_sorted_by_priorities);
+                    static function (array $carry, array $listenersSortedByPriorities): array {
+                        return array_merge($carry, $listenersSortedByPriorities);
                     },
                     []
                 );
             },
-            $sorted_without_priorities
+            $sortedWithoutPriorities
         );
 
-        return $fully_sorted;
+        return $fullySorted;
     }
 
     /**
@@ -81,12 +81,12 @@ final class ListenerProvider implements ListenerProviderInterface
      */
     public function getListenersForEvent(object $event): iterable
     {
-        foreach ($this->orderedListenerFqcnIterableForEvent($event) as $listener_fqcn) {
-            if (!$this->service_locator->has($listener_fqcn)) {
+        foreach ($this->orderedListenerFqcnIterableForEvent($event) as $listenerFqcn) {
+            if (!$this->serviceLocator->has($listenerFqcn)) {
                 continue;
             }
 
-            $listener = $this->service_locator->get($listener_fqcn);
+            $listener = $this->serviceLocator->get($listenerFqcn);
 
             if (!$listener instanceof Listener) {
                 continue;
@@ -101,6 +101,6 @@ final class ListenerProvider implements ListenerProviderInterface
      */
     private function orderedListenerFqcnIterableForEvent(object $event): array
     {
-        return $this->sorted_correlations[get_class($event)] ?? [];
+        return $this->sortedCorrelations[get_class($event)] ?? [];
     }
 }

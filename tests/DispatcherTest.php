@@ -15,18 +15,18 @@ class DispatcherTest extends TestCase
     protected function setUp(): void
     {
         $this->listener = new class implements Listener {
-            public bool $has_been_processed = false;
+            public bool $hasBeenProcessed = false;
 
             public function process(object $event): Observable
             {
                 return Observable::of('obs')
                     ->do(function (): void {
-                        $this->has_been_processed = true;
+                        $this->hasBeenProcessed = true;
                     });
             }
         };
 
-        $this->listener_provider = new class ($this->listener) implements ListenerProviderInterface {
+        $this->listenerProvider = new class ($this->listener) implements ListenerProviderInterface {
             private Listener $listener;
 
             public function __construct(Listener $listener)
@@ -47,10 +47,10 @@ class DispatcherTest extends TestCase
         $event = new class {
         };
 
-        (new Dispatcher($this->listener_provider))
+        (new Dispatcher($this->listenerProvider))
             ->dispatch((new $event()))
             ->subscribe();
 
-        $this->assertTrue($this->listener->has_been_processed);
+        $this->assertTrue($this->listener->hasBeenProcessed);
     }
 }
