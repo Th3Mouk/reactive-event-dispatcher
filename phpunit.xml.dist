@@ -16,7 +16,7 @@
     <logging>
 <!--        <log type="coverage-html" target="./tmp/report" lowUpperBound="50"-->
 <!--             highLowerBound="75"/>-->
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
+        <log type="coverage-php" target="build/cov/coverage.cov"/>
 <!--        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
     </logging>
 </phpunit>

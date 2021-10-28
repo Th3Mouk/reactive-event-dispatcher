@@ -3,13 +3,26 @@ on: [push]
 jobs:
     ci:
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
+                dependencies:
+                    - highest
+                include:
+                    - php: '7.4'
+                      dependencies: lowest
+
         steps:
             - uses: actions/checkout@v1
 
             - name: Setup PHP, with composer and extensions
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '7.4'
+                  php-version: ${{ matrix.php }}
                   coverage: pcov
 
             - name: Get Composer Cache Directory
@@ -23,8 +36,11 @@ jobs:
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
                   restore-keys: ${{ runner.os }}-composer-
 
-            - name: Composer install
-              run: composer install --prefer-dist --no-progress --no-suggest
+            - name: Install dependencies
+              uses: ramsey/composer-install@v1
+              with:
+                  dependency-versions: ${{ matrix.dependencies }}
+                  composer-options: --prefer-dist
 
             - name: CodeSniffer
               run: php vendor/bin/phpcs
@@ -42,5 +58,6 @@ jobs:
               env:
                   COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
-                  composer global require php-coveralls/php-coveralls
-                  php-coveralls -v
+                  composer require --dev php-coveralls/php-coveralls phpunit/phpcov
+                  php vendor/bin/phpcov merge --clover build/logs/clover.xml build/cov
+                  php vendor/bin/php-coveralls -v
